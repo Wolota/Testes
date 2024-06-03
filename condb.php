@@ -1,4 +1,5 @@
 <?php
+// v2
 
 // Inclui o arquivo de configuração
 require_once 'config/config_db.php';
@@ -7,28 +8,31 @@ class DBConnection {
     private $pdo;
 
     public function __construct($config) {
-        $dsn = "mysql:host={$config->dbhost};dbname={$config->dbdefault}";
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ];
-
-        if ($config->use_utf8mb4) {
-            $dsn .= ";charset=utf8mb4";
-        }
-
+        echo "Iniciando a conexão com o banco de dados...\n";
+        
+        $dsn = "mysql:host={$config->dbhost};dbname={$config->dbdefault};charset=utf8mb4";
         try {
-            $this->pdo = new PDO($dsn, $config->dbuser, $config->dbpassword, $options);
+            $this->pdo = new PDO($dsn, $config->dbuser, $config->dbpassword);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo "Conexão estabelecida com sucesso.\n";
         } catch (PDOException $e) {
-            die("Erro na conexão: " . $e->getMessage());
+            echo "Erro na conexão: " . $e->getMessage() . "\n";
+            die();
         }
     }
 
     public function listTables() {
+        echo "Consultando as tabelas...\n";
         $query = "SHOW TABLES";
-        $stmt = $this->pdo->query($query);
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        try {
+            $stmt = $this->pdo->query($query);
+            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            echo "Consulta concluída com sucesso.\n";
+            return $tables;
+        } catch (PDOException $e) {
+            echo "Erro ao consultar as tabelas: " . $e->getMessage() . "\n";
+            return [];
+        }
     }
 }
 
