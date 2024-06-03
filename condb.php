@@ -1,7 +1,7 @@
 <?php
 
 // Inclui o arquivo de configuração
-require_once 'config/config_db.php';
+$config = include 'config_db.php';
 
 class DBConnection {
     private $mysqli;
@@ -9,7 +9,7 @@ class DBConnection {
     public function __construct($config) {
         echo "<h3>Iniciando a conexão com o banco de dados...</h3>";
 
-        $this->mysqli = new mysqli($config->dbhost, $config->dbuser, $config->dbpassword, $config->dbdefault);
+        $this->mysqli = new mysqli($config['dbhost'], $config['dbuser'], $config['dbpassword'], $config['dbdefault']);
 
         if ($this->mysqli->connect_error) {
             echo "<h3>Erro na conexão: " . $this->mysqli->connect_error . "</h3>";
@@ -44,15 +44,12 @@ class DBConnection {
     }
 }
 
-// Instancia a classe DB para obter as configurações
-$config = new DB();
-
 // Instancia a conexão usando as configurações
 $dbConnection = new DBConnection($config);
 $tables = $dbConnection->listTables();
 
 // Exibe as tabelas
-echo "<h3>Tabelas no banco de dados {$config->dbdefault}:</h3>";
+echo "<h3>Tabelas no banco de dados {$config['dbdefault']}:</h3>";
 foreach ($tables as $table) {
     echo "<h3>{$table}</h3>";
 }
