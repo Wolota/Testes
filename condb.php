@@ -1,5 +1,10 @@
 <?php
 
+// Habilitar a exibição de erros
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Inclua os arquivos principais do GLPI
 include('./inc/includes.php');
 
@@ -22,5 +27,3 @@ if (User::checkLogin($username, $password)) {
 } else {
     echo "Falha na autenticação. Verifique o nome de usuário e a senha.";
 }
-
-?>
